@@ -40,13 +40,13 @@ const SalesTodaySection = () => {
           </div>
           <div className="grid grid-cols-3 w-96 gap-20 text-end">
             <div>
-              &#x20B1; {ts.vat_amount.$numberDecimal}
+              &#x20B1; {ts.vat_amount?.$numberDecimal}
             </div>
             <div>
-              &#x20B1; {ts.vat_sales.$numberDecimal}
+              &#x20B1; {ts.vat_sales?.$numberDecimal}
             </div>
             <div className="font-semibold">
-              &#x20B1; {ts.amount.$numberDecimal}
+              &#x20B1; {ts.amount?.$numberDecimal}
             </div>
           </div>
         </div>)}

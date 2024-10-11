@@ -31,13 +31,13 @@ const SalesRange = () => {
                     {st.receipt_no}
                   </div>
                   <div>
-                    {st.vat_sales.$numberDecimal}
+                    {st.vat_sales?.$numberDecimal}
                   </div>
                   <div>
-                    {st.vat_amount.$numberDecimal}
+                    {st.vat_amount?.$numberDecimal}
                   </div>
                   <div>
-                    {st.amount.$numberDecimal}
+                    {st.amount?.$numberDecimal}
                   </div>
                 </div>)}
             </div>
@@ -46,13 +46,13 @@ const SalesRange = () => {
                 Total
               </div>
               <div>
-                {sale.totalVatSalesThisDay.$numberDecimal}
+                {sale.totalVatSalesThisDay?.$numberDecimal}
               </div>
               <div>
-                {sale.totalVatAmountThisDay.$numberDecimal}
+                {sale.totalVatAmountThisDay?.$numberDecimal}
               </div>
               <div>
-                {sale.totalSalesThisDay.$numberDecimal}
+                {sale.totalSalesThisDay?.$numberDecimal}
               </div>
             </div>
           </div>
