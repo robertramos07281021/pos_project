@@ -191,7 +191,7 @@ export const sumTransaction = asyncHandler(async (req, res) => {
 export const getAllTransaction = asyncHandler(async (req, res) => {
   try {
     const transactions = await Transaction.find({
-      amount: { $gt: 0 },
+      isDone: { $eq: true },
     })
       .populate("customer_id")
       .populate({ path: "orders", populate: { path: "product_id" } });
@@ -343,6 +343,7 @@ export const payment = asyncHandler(async (req, res) => {
       amount: totalPriceTransaction[0].sum_val,
       vat_amount: ((totalPriceTransaction[0].sum_val / 1.12) * 0.12).toFixed(2),
       vat_sales: (totalPriceTransaction[0].sum_val / 1.12).toFixed(2),
+      isDone: true,
     });
     return res.status(200).json({ message: "Thank you!" });
   } catch (error) {
@@ -522,8 +523,8 @@ export const getSalesToday = asyncHandler(async (req, res) => {
             },
           },
           {
-            amount: {
-              $ne: null,
+            isDone: {
+              $eq: true,
             },
           },
         ],
@@ -563,8 +564,8 @@ export const getSalesToday = asyncHandler(async (req, res) => {
             },
           },
           {
-            amount: {
-              $ne: null,
+            isDone: {
+              $eq: true,
             },
           },
         ],
@@ -600,6 +601,7 @@ export const getSalesQuery = asyncHandler(async (req, res) => {
       {
         $match: {
           createdAt: { $gte: new Date(dateTo), $lte: new Date(dateToFormat) },
+          isDone: { $eq: true },
         },
       },
       {
@@ -622,6 +624,7 @@ export const getSalesQuery = asyncHandler(async (req, res) => {
             $gte: new Date(dateFrom),
             $lte: new Date(dateFromFormat),
           },
+          isDone: { $eq: true },
         },
       },
       {
@@ -641,6 +644,7 @@ export const getSalesQuery = asyncHandler(async (req, res) => {
       {
         $match: {
           createdAt: { $gte: new Date(dateFrom), $lte: new Date(dateToFormat) },
+          isDone: { $eq: true },
         },
       },
       {
@@ -735,7 +739,9 @@ export const paggination = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const limit = 10;
   try {
-    const transaction = await Transaction.find()
+    const transaction = await Transaction.find({
+      isDone: { $eq: true },
+    })
       .populate("customer_id")
       .skip((id - 1) * limit)
       .limit(limit);

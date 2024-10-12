@@ -15,9 +15,14 @@ const TransactionSchema = new Schema(
       max: 10,
       min: 10,
     },
+    isDone: {
+      type: Boolean,
+      default: false,
+    },
     amount: {
       type: mongoose.Decimal128,
       get: (v) => new mongoose.Types.Decimal128((+v.toString()).toFixed(2)),
+      default: parseInt(0).toFixed(2),
     },
     cash: {
       type: mongoose.Decimal128,
