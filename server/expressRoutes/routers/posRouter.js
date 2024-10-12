@@ -36,7 +36,13 @@ import {
 
 const router = Router();
 // product routers
-router.post("/product", authenticate, createProduct);
+router.post(
+  "/product",
+  authenticate,
+  validationProduct,
+  validationStock,
+  createProduct
+);
 router.patch("/product/:id", authenticate, validationProduct, updateProduct);
 router.get("/product", authenticate, getAllProduct);
 

@@ -22,23 +22,31 @@ const NewProductForm = ({modalToggle}) => {
   })
   const [productExistsError, setProductExistsError] = useState(false)
   const dispatch = useDispatch()
+  const [hunterError ,setHunterError] = useState(false)
 
   const handleSubmit = async(e) => {
     e.preventDefault()
     const res = await createProduct(newProductInfo)
     if(!res?.error) {
-      await newStock({productId: res?.data?._id, qty: newProductInfo.qty})
-      setNewProductInfo({
-        product_name: '',
-        barcode: '',
-        description: '',
-        price: 0,
-        qty: 0
-      })
-      setProductExistsError(false)
-      modalToggle()
+      const newStockRes = await newStock({productId: res?.data?._id, qty: newProductInfo.qty})
+      if(!newStockRes?.error) {
+        setHunterError(false)
+        setNewProductInfo({
+          product_name: '',
+          barcode: '',
+          description: '',
+          price: 0,
+          qty: 0
+        })
+        refetch()
+        setProductExistsError(false)
+        modalToggle()
+      } else {
+        setHunterError(true)
+      }
 
     } else {
+      setHunterError(true)
       if(res?.error?.data?.message === "Product is already exists") {
         setProductExistsError(true)
       }
@@ -52,9 +60,8 @@ const NewProductForm = ({modalToggle}) => {
   }
 
   useEffect(()=> {
-    refetch()
     dispatch(setFilteredStock(data))
-  },[newProductInfo])
+  },[newProductInfo,refetch])
 
   document.addEventListener('keydown', function(event) {
     if(event.code === "Escape") {
@@ -67,6 +74,11 @@ const NewProductForm = ({modalToggle}) => {
       <form className="w-96 min-h-96 bg-white rounded overflow-hidden shadow-md shadow-black/30" onSubmit={handleSubmit}>
         <div className="py-2 px-5 text-2xl bg-yellow-500 text-white font-bold ">New Products</div>
         <div className="p-5 flex flex-col gap-2">
+          {
+            hunterError
+            &&
+            <p className="text-xs font-bold text-red-500 text-center">Fill up the form correctly!</p>
+          }
           <label >
             <span className={`text-lg font-semibold ${productExistsError && "after:content-['Product_already_exists.'] after:text-xs after:pl-20 after:text-red-500"}`}>Product Name :</span>
             <input type="text" className="border-2 border-slate-300 w-full p-1 rounded placeholder:text-xs" value={newProductInfo.product_name} onChange={(e)=> 
