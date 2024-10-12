@@ -1,30 +1,49 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useUpdateProductMutation, useUpdateStockMutation } from "../redux/api/pos"
 
 
 const UpdateProductForm = ({closeUpdateModal,refetchStocks}) => {
   const {stock} = useSelector(state=> state.stock)
+
+
   const [newProductInfo, setNewProductInfo] = useState({
-    product_name: stock?.product_id.product_name,
-    barcode: stock?.product_id.barcode,
-    description: stock?.product_id.description,
-    price: stock?.product_id.price?.$numberDecimal,
-    qty: stock?.qty
+    product_name: "",
+    barcode: "",
+    description: "",
+    price: "",
+    qty: "",
   })
+  
+  useEffect(()=> { 
+    newProductInfo.product_name =  stock?.product_id.product_name;
+    newProductInfo.barcode =  stock?.product_id.barcode;
+    newProductInfo.description =  stock?.product_id.description;
+    newProductInfo.price =  stock?.product_id.price?.$numberDecimal;
+    newProductInfo.qty =  stock?.qty;
+  },[])
+  
   const [updateProduct] = useUpdateProductMutation()
   const [updateStock] = useUpdateStockMutation()
+  const [hunterError, setHunterError] = useState(false)
 
   const [productExistsError, setProductExistsError] = useState(false)
   const handleSubmit = async(e) => {
     e.preventDefault()
     const res = await updateProduct({data: newProductInfo, productId: stock?.product_id?._id})
     if(!res?.error) {
-      await updateStock({stockId: stock?._id, qty: newProductInfo.qty})
-      refetchStocks()
-      closeUpdateModal()
+      const stockRes = await updateStock({stockId: stock?._id, qty: newProductInfo.qty})
+      if(!stockRes?.error) {
+        setHunterError(false)
+        refetchStocks()
+        closeUpdateModal()
+      } else {
+        setHunterError(true)
+      }
     } else { 
+      setHunterError(true)
       if(res?.error.data.message === "This barcode is already in used.") {
         setProductExistsError(true)
       }
@@ -42,7 +61,12 @@ const UpdateProductForm = ({closeUpdateModal,refetchStocks}) => {
       <form className="w-96 min-h-96 bg-white rounded overflow-hidden shadow-md shadow-black/30" onSubmit={handleSubmit}>
         <div className="py-2 px-5 text-2xl bg-green-500 text-white font-bold ">Update Products</div>
         <div className="p-5 flex flex-col gap-2">
-          <label >
+          {
+            hunterError
+            &&
+            <p className="text-xs font-bold text-red-500 text-center">Fill up the form correctly!</p>
+          }
+          <label className="w-full">
             <span className="text-lg font-semibold">Barcode :</span>
             <input type="text" className="border-2 border-slate-300 w-full p-1 rounded placeholder:text-xs" value={newProductInfo.barcode} onChange={(e)=> 
               setNewProductInfo({...newProductInfo, barcode: e.target.value})
@@ -67,7 +91,7 @@ const UpdateProductForm = ({closeUpdateModal,refetchStocks}) => {
             } placeholder="Enter Price"/>
           </label>
           <label >
-            <span className="text-lg font-semibold">Price :</span>
+            <span className="text-lg font-semibold">Quantity :</span>
             <input type="number" className="border-2 border-slate-300 w-full p-1 rounded placeholder:text-xs" value={newProductInfo.qty} onChange={(e)=> 
               setNewProductInfo({...newProductInfo, qty: e.target.value})
             } placeholder="Enter Price"/>

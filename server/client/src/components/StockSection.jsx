@@ -106,7 +106,7 @@ const StockSection = ({closeProductModal, resetFilter, searchFilter}) => {
         {filteredStock?.map((s)=> <div key={s._id} className={`${(s._id === stock?._id && (lockConfirmation || unlockConfirmation)) && 'bg-red-500 text-white' } ${(s._id === stock?._id && updateStock) && 'bg-green-500 text-white' } ${s._id != stock?._id && 'odd:bg-slate-100'} grid grid-cols-6 divide-x text-center text-base  py-2 items-center hover:bg-blue-50`}>
           <div>{s.product_id.barcode}</div>
           <div>{s.product_id.product_name}</div>
-          <div>{s.product_id.price?.$numberDecimal}</div>
+          <div>&#x20B1; {s.product_id.price?.$numberDecimal}</div>
           <div>{s.product_id.description}</div>
           <div>{s.qty}</div>
           <div className="flex gap-8 justify-center">

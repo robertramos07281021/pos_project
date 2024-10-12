@@ -29,12 +29,15 @@ import {
   paggination,
 } from "../controllers/posController.js";
 import authenticate from "../../middleware/autheMiddleware.js";
+import {
+  validationProduct,
+  validationStock,
+} from "../../middleware/validation.js";
 
 const router = Router();
-
 // product routers
 router.post("/product", authenticate, createProduct);
-router.patch("/product/:id", authenticate, updateProduct);
+router.patch("/product/:id", authenticate, validationProduct, updateProduct);
 router.get("/product", authenticate, getAllProduct);
 
 // customer router
@@ -56,7 +59,7 @@ router.delete("/order/:id", authenticate, deleteTransactionOrder);
 
 //stock router
 router.post("/stock/:productId", authenticate, addStock);
-router.patch("/stock/:id", authenticate, updateStock);
+router.patch("/stock/:id", authenticate, validationStock, updateStock);
 router.get("/stocks", authenticate, getStocks);
 router.put("/stock/:id/locked", authenticate, stockLocked);
 router.put("/stock/:id/unlocked", authenticate, stockUnlocked);
