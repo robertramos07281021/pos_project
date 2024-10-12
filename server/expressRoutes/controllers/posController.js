@@ -165,7 +165,9 @@ export const getTransaction = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Transaction not found." });
 
     return res.status(200).json(transaction);
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 // ---- transaction grand total compute ----
@@ -499,6 +501,7 @@ export const getSalesToday = asyncHandler(async (req, res) => {
         amount: 1,
         vat_amount: 1,
         vat_sales: 1,
+        isDone: 1,
         year: { $year: "$createdAt" },
         month: { $month: "$createdAt" },
         date: { $dayOfMonth: "$createdAt" },
@@ -540,6 +543,7 @@ export const getSalesToday = asyncHandler(async (req, res) => {
         amount: 1,
         vat_amount: 1,
         vat_sales: 1,
+        isDone: 1,
         year: { $year: "$createdAt" },
         month: { $month: "$createdAt" },
         date: { $dayOfMonth: "$createdAt" },
