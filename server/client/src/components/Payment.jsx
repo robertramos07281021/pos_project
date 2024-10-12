@@ -85,7 +85,7 @@ const Payment = ({cancel}) => {
             <div >&#x20B1; {(transaactionGrandTotal?.sum_val?.$numberDecimal /1.12).toFixed(2)}</div>
 
           </div>
-          {(!completePayment && !getTransction?.amount?.$numberDecimal) &&
+          {(!completePayment && !getTransction?.isDone) &&
             <div className="flex justify-center mt-4 gap-8">
               <button className="w-28 py-2 bg-blue-500 rounded text-white font-bold border border-blue-500 shadow shadow-black hover:bg-blue-300 hover:text-blue-500 duration-200 ease-in-out">PAY</button>
               <div className="w-28 py-2 bg-slate-300 rounded text-black font-bold text-center border border-slate-300 cursor-pointer shadow shadow-black hover:bg-slate-600 hover:text-slate-300 duration-200 ease-in-out" onClick={cancel}>Cancel</div>
