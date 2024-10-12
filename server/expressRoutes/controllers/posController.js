@@ -191,7 +191,7 @@ export const sumTransaction = asyncHandler(async (req, res) => {
 export const getAllTransaction = asyncHandler(async (req, res) => {
   try {
     const transactions = await Transaction.find({
-      amount: { $ne: null },
+      amount: { $gt: 0 },
     })
       .populate("customer_id")
       .populate({ path: "orders", populate: { path: "product_id" } });
